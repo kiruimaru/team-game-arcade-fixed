@@ -36,8 +36,20 @@ void printHUD() {
 }
 
 bool riskOperation() {
-  std::cout << "\nРейд пока недоступен.\n";
-  return false;
+  if (hp <= 0) {
+    return false;
+  }
+  if (std::rand() % 100 < 50) {
+    const int reward = 200 + std::rand() % 301;
+    addCapped(score, reward);
+    addCapped(resources, reward);
+    std::cout << "\nУспешный рейд! +" << reward << " очков и крышек.\n";
+  } else {
+    const int damage = 30 + std::rand() % 21;
+    hp = std::max(0, hp - damage);
+    std::cout << "\nЗасада рейдеров! Потеряно " << damage << " HP.\n";
+  }
+  return true;
 }
 
 bool recovery() {
