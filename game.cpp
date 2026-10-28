@@ -46,8 +46,32 @@ bool recovery() {
 }
 
 bool gambleEvent() {
-  std::cout << "\nКазино пока недоступно.\n";
-  return false;
+  if (hp <= 0) {
+    return false;
+  }
+  const int bet = resources / 5;
+  if (bet <= 0) {
+    std::cout << "\nДля ставки 20% нужно хотя бы 5 крышек.\n";
+    return false;
+  }
+  resources -= bet;
+  const int roll = std::rand() % 100;
+  if (roll < 50) {
+    const int payout = bet * 2;
+    const int reward = roll == 0 ? 500 : 100;
+    addCapped(resources, payout);
+    addCapped(score, reward);
+    std::cout << (roll == 0 ? "\nДжекпот!" : "\nПобеда!")
+              << " Ставка: " << bet << ", выплата: " << payout
+              << " крышек, +" << reward << " очков.\n";
+  } else {
+    std::cout << "\nПроигрыш! Потеряно " << bet << " крышек.\n";
+    if (roll == 99) {
+      hp = std::max(0, hp - 30);
+      std::cout << "Проклятие казино! Потеряно 30 HP.\n";
+    }
+  }
+  return true;
 }
 
 void finishTurn(bool actionCompleted) {
