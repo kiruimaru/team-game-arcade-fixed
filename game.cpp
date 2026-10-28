@@ -41,8 +41,50 @@ bool riskOperation() {
 }
 
 bool recovery() {
-  std::cout << "\nЛагерь пока недоступен.\n";
-  return false;
+  if (hp <= 0) {
+    return false;
+  }
+  if (hp >= 100) {
+    std::cout << "\nЗдоровье уже полностью восстановлено.\n";
+    return false;
+  }
+  std::cout << "\n=== ЛАГЕРЬ ===\n"
+            << "Здоровье: " << hp << "/100 | Крышки: " << resources << "\n"
+            << "1. Перевязка - 10 крышек, +10 HP\n"
+            << "2. Стимулятор - 25 крышек, +30 HP\n"
+            << "0. Выйти\n"
+            << "Выберите действие > ";
+  int choice = 0;
+  if (!readChoice(choice)) {
+    return false;
+  }
+  int cost = 0;
+  int heal = 0;
+  switch (choice) {
+  case 1:
+    cost = 10;
+    heal = 10;
+    break;
+  case 2:
+    cost = 25;
+    heal = 30;
+    break;
+  case 0:
+    return false;
+  default:
+    std::cout << "\nНеизвестная команда!\n";
+    return false;
+  }
+  if (resources < cost) {
+    std::cout << "\nНедостаточно крышек для покупки.\n";
+    return false;
+  }
+  const int restored = std::min(heal, 100 - hp);
+  resources -= cost;
+  hp += restored;
+  std::cout << "\nЛечение успешно. Восстановлено HP: " << restored
+            << "\nЗдоровье: " << hp << "/100 | Крышки: " << resources << "\n";
+  return true;
 }
 
 bool gambleEvent() {
